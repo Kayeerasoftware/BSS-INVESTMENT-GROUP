@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSS-2025 Investment Group</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background: linear-gradient(to bottom, #1f2937, #374151);
+            color: #e5e7eb;
+        }
+        .modal {
+            max-height: 80vh;
+            overflow-y: auto;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark-mode .modal {
+            background: rgba(31, 41, 55, 0.9);
+            color: #e5e7eb;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 8px;
+            color: white;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        th {
+            cursor: pointer;
+        }
+        th:hover {
+            background: #2563eb;
+        }
+        .nav-tab {
+            transition: all 0.3s;
+        }
+        .nav-tab.active {
+            background: #2563eb;
+            color: white;
+        }
+        .collapsible-header {
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .collapsible-header:hover {
+            background: #e5e7eb;
+        }
+        .dark-mode .collapsible-header:hover {
+            background: #4b5563;
+        }
+        .navbar-item {
+            transition: all 0.3s;
+        }
+        .navbar-item:hover {
+            background: #1d4ed8;
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #1f2937;
+        }
+        @media (max-width: 640px) {
+            .modal {
+                width: 95%;
+                padding: 1rem;
+            }
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            .p-6 {
+                padding: 1rem;
+            }
+            .nav-tab {
+                font-size: 0.875rem;
+                padding: 0.5rem;
+            }
+            .table-container table {
+                font-size: 0.75rem;
+            }
+            .navbar-item {
+                font-size: 0.75rem;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 to-blue-700 text-white text-center py-6">
+        <img src="Bunya ss.jpeg" alt="BSS-2025 Banner" class="w-full h-48 object-cover rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mt-4">BSS-2025 Investment Group</h1>
+        <p class="mt-2 text-lg">Empowering Bunya Secondary School Alumni</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-gray-900 text-white p-4 flex flex-wrap justify-between items-center">
+        <div class="flex flex-wrap gap-2">
+            <button onclick="showLogin('client')" class="navbar-item bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-user mr-2"></i>Client
+            </button>
+            <button onclick="showLogin('shareholder')" class="navbar-item bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-user mr-2"></i>Shareholder
+            </button>
+            <button onclick="showLogin('cashier')" class="navbar-item bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-user mr-2"></i>Cashier
+            </button>
+            <button onclick="showLogin('td')" class="navbar-item bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-user mr-2"></i>Technical Director
+            </button>
+            <button onclick="showLogin('ceo')" class="navbar-item bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-user mr-2"></i>CEO & Chairperson
+            </button>
+        </div>
+        <div class="flex gap-2 mt-2 sm:mt-0">
+            <button onclick="showRegister()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                <i class="fas fa-user-plus mr-2"></i>Register
+            </button>
+            <button onclick="logout()" class="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+            <button onclick="toggleDarkMode()" class="bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Slider -->
+    <div class="slider-container max-w-6xl mx-auto my-8 overflow-hidden rounded-lg shadow-lg">
+        <div class="slides flex transition-transform duration-500">
+            <img src="for web 2.jpg" alt="Slide 1" class="w-full h-96 object-cover">
+            <video src="https://www.w3schools.com/html/mov_bbb.mp4" muted autoplay loop class="w-full h-96 object-cover"></video>
+            <img src="for web 3.jpg" alt="Slide 3" class="w-full h-96 object-cover">
+            <img src="for web 1.jpg" alt="Slide 3" class="w-full h-96 object-cover">
+            <img src="Bunya logo.jpg" alt="Slide 3" class="w-full h-96 object-cover">
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="overlay fixed inset-0 bg-black bg-opacity-60 hidden" id="overlay"></div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="loginModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-sign-in-alt mr-2"></i>Login</h2>
+        <form id="loginForm" onsubmit="event.preventDefault(); login();">
+            <input type="email" id="loginEmail" placeholder="Email" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="password" id="loginPassword" placeholder="Password" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Login</button>
+            <button type="button" onclick="showToast('Forgot password not implemented in this demo', 'error')" class="w-full bg-gray-600 text-white p-3 rounded-lg mt-2 hover:bg-gray-700 transition">Forgot Password</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="registerModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-plus mr-2"></i>Register</h2>
+        <form id="registerForm" onsubmit="event.preventDefault(); register();">
+            <input type="text" id="regFullName" placeholder="Full Name" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="email" id="regEmail" placeholder="Email" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="regMemberId" placeholder="Member ID (e.g., BSS002)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="regLocation" placeholder="Location" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="regOccupation" placeholder="Occupation" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="tel" id="regContact" placeholder="Contact (e.g., +256700123456)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="password" id="regPassword" placeholder="Password" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Register</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="loanModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-money-bill-wave mr-2"></i>Loan Application</h2>
+        <form id="loanForm" onsubmit="event.preventDefault(); applyLoan();">
+            <input type="text" id="loanMemberId" placeholder="Member ID" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="number" id="loanAmount" placeholder="Loan Amount (UGX)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <textarea id="loanPurpose" placeholder="Purpose of Loan" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+            <select id="loanRepayment" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="6">6 Months</option>
+                <option value="12">12 Months</option>
+                <option value="24">24 Months</option>
+            </select>
+            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4">
+                <p id="loanEstimate" class="text-sm">Enter amount to estimate interest</p>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Apply</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="transactionModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-exchange-alt mr-2"></i>Record Transaction</h2>
+        <form id="transactionForm" onsubmit="event.preventDefault(); recordTransaction();">
+            <input type="text" id="transMemberId" placeholder="Member ID" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="number" id="transAmount" placeholder="Amount (UGX)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <select id="transType" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="deposit">Deposit</option>
+                <option value="withdrawal">Withdrawal</option>
+                <option value="loanDisbursement">Loan Disbursement</option>
+            </select>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Record</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="projectModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-project-diagram mr-2"></i>Create Project</h2>
+        <form id="projectForm" onsubmit="event.preventDefault(); createProject();">
+            <input type="text" id="projectName" placeholder="Project Name" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="number" id="projectBudget" placeholder="Budget (UGX)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="date" id="projectTimeline" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <textarea id="projectDescription" placeholder="Project Description" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Create</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="memberModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-plus mr-2"></i>Add Member</h2>
+        <form id="memberForm" onsubmit="event.preventDefault(); addMember();">
+            <input type="text" id="memberFullName" placeholder="Full Name" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="email" id="memberEmail" Placeholder="Email" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="memberId" placeholder="Member ID (e.g., BSS002)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="memberLocation" placeholder="Location" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="memberOccupation" placeholder="Occupation" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="tel" id="memberContact" placeholder="Contact (e.g., +256700123456)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Add</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="editMemberModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-edit mr-2"></i>Edit Member</h2>
+        <form id="editMemberForm" onsubmit="event.preventDefault(); editMember();">
+            <input type="text" id="editMemberId" readonly class="w-full p-3 mb-4 border rounded-lg bg-gray-100">
+            <input type="text" id="editMemberFullName" placeholder="Full Name" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="email" id="editMemberEmail" placeholder="Email" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="editMemberLocation" placeholder="Location" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="editMemberOccupation" placeholder="Occupation" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="tel" id="editMemberContact" placeholder="Contact (e.g., +256700123456)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Update</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="condolenceModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-hand-holding-heart mr-2"></i>Condolence Fund</h2>
+        <form id="condolenceForm" onsubmit="event.preventDefault(); contributeCondolence();">
+            <input type="text" id="condolenceMemberId" placeholder="Member ID" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="number" id="condolenceAmount" placeholder="Contribution Amount (UGX)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Contribute</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="profileModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-edit mr-2"></i>Update Profile</h2>
+        <form id="profileForm" onsubmit="event.preventDefault(); updateProfile();">
+            <input type="text" id="profileFullName" placeholder="Full Name" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="email" id="profileEmail" placeholder="Email" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="profileLocation" placeholder="Location" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="text" id="profileOccupation" placeholder="Occupation" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <input type="tel" id="profileContact" placeholder="Contact (e.g., +256700123456)" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Update</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+    <div class="modal hidden fixed bg-white p-6 rounded-lg shadow-2xl max-w-md w-full" id="announcementModal">
+        <h2 class="text-2xl font-bold mb-4"><i class="fas fa-bullhorn mr-2"></i>Send Announcement</h2>
+        <form id="announcementForm" onsubmit="event.preventDefault(); sendAnnouncement();">
+            <textarea id="announcementMessage" placeholder="Announcement Message" required class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">Send</button>
+            <button type="button" onclick="closeModal()" class="w-full bg-red-600 text-white p-3 rounded-lg mt-2 hover:bg-red-700 transition">Close</button>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard max-w-6xl mx-auto my-8 bg-white dark:bg-gray-800 rounded-lg shadow-xl hidden fade-in" id="dashboard">
+        <div class="nav-tabs bg-gray-100 dark:bg-gray-900 p-4 flex flex-wrap gap-2 border-b">
+            <div id="navTabs"></div>
+        </div>
+        <div class="content p-6">
+            <!-- Client Dashboard -->
+            <div id="clientDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-users mr-2"></i>Client Dashboard</h2>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-table mr-2"></i>Group Overview</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="table-container">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="p-3" onclick="sortTable('clientTable', 0)">Date</th>
+                                    <th class="p-3" onclick="sortTable('clientTable', 1)">Registered Members</th>
+                                    <th class="p-3">Cashier</th>
+                                    <th class="p-3">Technical Director</th>
+                                    <th class="p-3">CEO & Chairperson</th>
+                                    <th class="p-3">Loan Available?</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="showLoanModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Apply for Loan
+                    </button>
+                    <button onclick="exportToCSV('clientTable', 'client_data')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-briefcase mr-2"></i>Investment Opportunities</h3>
+                </div>
+                <div class="collapsible-content">
+                    <p class="mt-2">Explore: Agriculture (12% ROI), Real Estate (8% ROI), Education (10% ROI)</p>
+                </div>
+            </div>
+            <!-- Shareholder Dashboard -->
+            <div id="shareholderDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user mr-2"></i>Shareholder Dashboard</h2>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-table mr-2"></i>Members</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="table-container">
+                        <input type="text" id="shareholderSearch" placeholder="Search by Name or ID" class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="p-3" onclick="sortTable('shareholderTable', 0)">SN</th>
+                                    <th class="p-3" onclick="sortTable('shareholderTable', 1)">Full Name</th>
+                                    <th class="p-3" onclick="sortTable('shareholderTable', 2)">Member ID</th>
+                                    <th class="p-3" onclick="sortTable('shareholderTable', 3)">Savings (UGX)</th>
+                                    <th class="p-3" onclick="sortTable('shareholderTable', 4)">Current Loan (UGX)</th>
+                                    <th class="p-3">Location</th>
+                                    <th class="p-3">Occupation</th>
+                                    <th class="p-3">Contacts</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shareholderTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-chart-line mr-2"></i>Savings Trend</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="flex gap-4">
+                        <input type="text" id="memberIdInput" placeholder="Enter Member ID" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <button onclick="showSavingsTrend(document.getElementById('memberIdInput').value)" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-chart-line mr-2"></i>Show Trend
+                        </button>
+                    </div>
+                    <canvas id="savingsChart" class="mt-4"></canvas>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-wallet mr-2"></i>Portfolio</h3>
+                </div>
+                <div class="collapsible-content">
+                    <p id="portfolio"></p>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-money-bill-wave mr-2"></i>Loan Repayments</h3>
+                </div>
+                <div class="collapsible-content">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="p-3">Loan Amount (UGX)</th>
+                                <th class="p-3">Interest (UGX)</th>
+                                <th class="p-3">Repayment Period</th>
+                                <th class="p-3">Monthly Payment (UGX)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repaymentTable"></tbody>
+                    </table>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="showLoanModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Apply for Loan
+                    </button>
+                    <button onclick="showProfileModal()" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition">
+                        <i class="fas fa-user-edit mr-2"></i>Update Profile
+                    </button>
+                    <button onclick="exportToCSV('shareholderTable', 'shareholder_data')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+            </div>
+            <!-- Cashier Dashboard -->
+            <div id="cashierDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-calculator mr-2"></i>Cashier Dashboard</h2>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-wallet mr-2"></i>Financial Summary</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-money-bill mr-2"></i>Total Savings</h3>
+                            <p id="totalSavings">UGX 0</p>
+                        </div>
+                        <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-hand-holding-usd mr-2"></i>Total Loans</h3>
+                            <p id="totalLoans">UGX 0</p>
+                        </div>
+                        <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-wallet mr-2"></i>Available Funds</h3>
+                            <p id="availableFunds">UGX 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-money-check-alt mr-2"></i>Pending Loans</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="table-container">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="p-3" onclick="sortTable('loanTable', 0)">Member ID</th>
+                                    <th class="p-3" onclick="sortTable('loanTable', 1)">Amount (UGX)</th>
+                                    <th class="p-3">Purpose</th>
+                                    <th class="p-3">Repayment</th>
+                                    <th class="p-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loanTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="showTransactionModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-exchange-alt mr-2"></i>Record Transaction
+                    </button>
+                    <button onclick="showCondolenceModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-hand-holding-heart mr-2"></i>Contribute to Condolence
+                    </button>
+                    <button onclick="exportToCSV('loanTable', 'loan_data')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-chart-pie mr-2"></i>Financial Distribution</h3>
+                </div>
+                <div class="collapsible-content">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
+            <!-- Technical Director Dashboard -->
+            <div id="tdDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-project-diagram mr-2"></i>Technical Director Dashboard</h2>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-tasks mr-2"></i>Active Projects</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="table-container">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="p-3" onclick="sortTable('projectTable', 0)">Name</th>
+                                    <th class="p-3" onclick="sortTable('projectTable', 1)">Budget (UGX)</th>
+                                    <th class="p-3">Timeline</th>
+                                    <th class="p-3" onclick="sortTable('projectTable', 3)">Progress (%)</th>
+                                    <th class="p-3" onclick="sortTable('projectTable', 4)">ROI (%)</th>
+                                    <th class="p-3" onclick="sortTable('projectTable', 5)">Risk Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="showProjectModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-plus-circle mr-2"></i>Create Project
+                    </button>
+                    <button onclick="exportToCSV('projectTable', 'project_data')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-chart-bar mr-2"></i>Project Progress</h3>
+                </div>
+                <div class="collapsible-content">
+                    <canvas id="projectChart"></canvas>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-comments mr-2"></i>Team Communication</h3>
+                </div>
+                <div class="collapsible-content">
+                    <textarea id="teamMessage" placeholder="Send message to team" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+                    <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mt-2">
+                        <i class="fas fa-paper-plane mr-2"></i>Send
+                    </button>
+                </div>
+            </div>
+            <!-- CEO Dashboard -->
+            <div id="ceoDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-crown mr-2"></i>CEO & Chairperson Dashboard</h2>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-wallet mr-2"></i>Summary</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-users mr-2"></i>Total Members</h3>
+                            <p id="totalMembers">0</p>
+                        </div>
+                        <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-briefcase mr-2"></i>Active Investments</h3>
+                            <p id="activeInvestments">0</p>
+                        </div>
+                        <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg shadow">
+                            <h3 class="font-bold"><i class="fas fa-hand-holding-heart mr-2"></i>Condolence Fund</h3>
+                            <p id="condolenceFund">UGX 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-users mr-2"></i>Members</h3>
+                </div>
+                <div class="collapsible-content">
+                    <div class="table-container">
+                        <input type="text" id="memberSearch" placeholder="Search by Name or ID" class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-blue-600 text-white">
+                                    <th class="p-3" onclick="sortTable('ceoMemberTable', 0)">SN</th>
+                                    <th class="p-3" onclick="sortTable('ceoMemberTable', 1)">Full Name</th>
+                                    <th class="p-3" onclick="sortTable('ceoMemberTable', 2)">Member ID</th>
+                                    <th class="p-3" onclick="sortTable('ceoMemberTable', 3)">Savings (UGX)</th>
+                                    <th class="p-3" onclick="sortTable('ceoMemberTable', 4)">Current Loan (UGX)</th>
+                                    <th class="p-3">Location</th>
+                                    <th class="p-3">Occupation</th>
+                                    <th class="p-3">Contacts</th>
+                                    <th class="p-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ceoMemberTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="showMemberModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-user-plus mr-2"></i>Add Member
+                    </button>
+                    <button onclick="showCondolenceModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-hand-holding-heart mr-2"></i>Contribute to Condolence
+                    </button>
+                    <button onclick="showAnnouncementModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-bullhorn mr-2"></i>Send Announcement
+                    </button>
+                    <button onclick="exportToCSV('ceoMemberTable', 'member_data')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-chart-line mr-2"></i>Group Performance</h3>
+                </div>
+                <div class="collapsible-content">
+                    <canvas id="managementChart"></canvas>
+                </div>
+                <div class="collapsible-header bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-6 mb-2">
+                    <h3 class="text-lg font-bold"><i class="fas fa-history mr-2"></i>Activity Log</h3>
+                </div>
+                <div class="collapsible-content">
+                    <ul id="activityLog" class="list-disc pl-5"></ul>
+                </div>
+            </div>
+            <!-- Notifications -->
+            <div id="notificationsDashboard" class="hidden fade-in">
+                <h2 class="text-2xl font-bold mb-4"><i class="fas fa-bell mr-2"></i>Notifications</h2>
+                <ul id="notificationsList" class="list-disc pl-5"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Enhanced Local Storage Database
+        let db = {
+            members: [
+                {
+                    id: 'BSS001',
+                    fullName: 'MUSUBIKA LYDIA',
+                    email: 'lydia@bssgroup.com',
+                    location: 'Mayuge',
+                    occupation: 'Acountant',
+                    contact: '+256759159154340',
+                    savings: 5000000,
+                    loan: 2000000,
+                    portfolio: [{ name: 'Agriculture', amount: 1000000, roi: 12 }],
+                    savingsHistory: [
+                        { month: 'Jan', amount: 1000000 },
+                        { month: 'Feb', amount: 2000000 },
+                        { month: 'Mar', amount: 3500000 },
+                        { month: 'Apr', amount: 4000000 },
+                        { month: 'May', amount: 5000000 }
+                    ],
+                    activity: [{ action: 'Registered', timestamp: new Date().toISOString() }],
+                    password: 'lydia' // Stored for demo login
+                }
+            ],
+            loans: [],
+            projects: [
+                { id: 'PRJ001', name: 'Agriculture Project', budget: 10000000, timeline: '2025-12-31', progress: 75, roi: 12, riskScore: 30, description: '' }
+            ],
+            transactions: [],
+            condolenceFund: 2000000,
+            notifications: [],
+            activityLog: [],
+            announcements: []
+        };
+
+        let currentRole = '';
+        let currentUser = null;
+        let savingsChart, financeChart, projectChart, managementChart;
+        let lastActivity = Date.now();
+
+        // Local Storage Functions
+        function loadDB() {
+            try {
+                const storedDB = localStorage.getItem('bss2025_db');
+                if (storedDB) {
+                    db = JSON.parse(storedDB);
+                    db.members = db.members.map(member => ({
+                        ...member,
+                        savings: member.savings || 0,
+                        loan: member.loan || 0,
+                        portfolio: member.portfolio || [],
+                        savingsHistory: member.savingsHistory || [],
+                        activity: member.activity || []
+                    }));
+                    db.projects = db.projects.map(project => ({
+                        ...project,
+                        id: project.id || `PRJ${Math.floor(100 + Math.random() * 900)}`
+                    }));
+                } else {
+                    saveDB();
+                }
+            } catch (error) {
+                showToast('Error loading data', 'error');
+            }
+        }
+
+        function saveDB() {
+            try {
+                localStorage.setItem('bss2025_db', JSON.stringify(db));
+            } catch (error) {
+                showToast('Error saving data', 'error');
+            }
+        }
+
+        // Utility Functions
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} show`;
+            setTimeout(() => toast.className = 'toast', 3000);
+        }
+
+        function exportToCSV(tableId, filename) {
+            try {
+                const table = document.getElementById(tableId);
+                const rows = Array.from(table.querySelectorAll('tr'));
+                const csv = rows.map(row => Array.from(row.querySelectorAll('th, td')).map(cell => `"${cell.textContent.trim()}"`).join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${filename}.csv`;
+                link.click();
+            } catch (error) {
+                showToast('Error exporting CSV', 'error');
+            }
+        }
+
+        function sortTable(tableId, colIndex) {
+            try {
+                const table = document.getElementById(tableId);
+                const rows = Array.from(table.querySelectorAll('tr')).slice(1);
+                const isNumeric = colIndex === 0 || colIndex >= 3;
+                rows.sort((a, b) => {
+                    let aValue = a.cells[colIndex].textContent.trim();
+                    let bValue = b.cells[colIndex].textContent.trim();
+                    if (isNumeric) {
+                        aValue = parseFloat(aValue.replace(/[^0-9.-]+/g, '')) || 0;
+                        bValue = parseFloat(bValue.replace(/[^0-9.-]+/g, '')) || 0;
+                        return aValue - bValue;
+                    }
+                    return aValue.localeCompare(bValue);
+                });
+                table.tBodies[0].innerHTML = '';
+                rows.forEach(row => table.tBodies[0].appendChild(row));
+            } catch (error) {
+                showToast('Error sorting table', 'error');
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // Modal Handling
+        function showModal(modalId) {
+            try {
+                const modal = document.getElementById(modalId);
+                const overlay = document.getElementById('overlay');
+                modal.classList.remove('hidden');
+                overlay.classList.remove('hidden');
+                modal.style.left = '50%';
+                modal.style.top = '50%';
+                modal.style.transform = 'translate(-50%, -50%)';
+                lastActivity = Date.now();
+            } catch (error) {
+                showToast('Error showing modal', 'error');
+            }
+        }
+
+        function closeModal() {
+            try {
+                document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+                document.getElementById('overlay').classList.add('hidden');
+                lastActivity = Date.now();
+            } catch (error) {
+                showToast('Error closing modal', 'error');
+            }
+        }
+
+        function showLogin(role) {
+            try {
+                if (currentUser) {
+                    currentRole = role;
+                    setupNavTabs();
+                    showDashboard(currentRole, 'default');
+                    showToast(`Switched to ${role} dashboard`);
+                } else {
+                    currentRole = role;
+                    showModal('loginModal');
+                }
+            } catch (error) {
+                showToast('Error switching role: ' + error.message, 'error');
+            }
+        }
+
+        function showRegister() {
+            showModal('registerModal');
+        }
+
+        function showLoanModal() {
+            showModal('loanModal');
+            document.getElementById('loanMemberId').value = currentUser?.id || '';
+        }
+
+        function showTransactionModal() {
+            showModal('transactionModal');
+        }
+
+        function showProjectModal() {
+            showModal('projectModal');
+        }
+
+        function showMemberModal() {
+            showModal('memberModal');
+        }
+
+        function showEditMemberModal(memberId) {
+            const member = db.members.find(m => m.id === memberId);
+            if (!member) {
+                showToast('Member not found', 'error');
+                return;
+            }
+            showModal('editMemberModal');
+            document.getElementById('editMemberId').value = member.id;
+            document.getElementById('editMemberFullName').value = member.fullName;
+            document.getElementById('editMemberEmail').value = member.email;
+            document.getElementById('editMemberLocation').value = member.location;
+            document.getElementById('editMemberOccupation').value = member.occupation;
+            document.getElementById('editMemberContact').value = member.contact;
+        }
+
+        function showCondolenceModal() {
+            showModal('condolenceModal');
+            document.getElementById('condolenceMemberId').value = currentUser?.id || '';
+        }
+
+        function showProfileModal() {
+            showModal('profileModal');
+            if (currentUser) {
+                document.getElementById('profileFullName').value = currentUser.fullName;
+                document.getElementById('profileEmail').value = currentUser.email;
+                document.getElementById('profileLocation').value = currentUser.location;
+                document.getElementById('profileOccupation').value = currentUser.occupation;
+                document.getElementById('profileContact').value = currentUser.contact;
+            }
+        }
+
+        function showAnnouncementModal() {
+            showModal('announcementModal');
+        }
+
+        // Database Operations
+        function login() {
+            try {
+                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+                const password = document.getElementById('loginPassword').value;
+                const member = db.members.find(m => m.email.toLowerCase() === email && m.password === password);
+                if (!member) {
+                    showToast('Invalid credentials', 'error');
+                    return;
+                }
+                currentUser = member;
+                member.activity.push({ action: 'Logged in', timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.querySelector('.slider-container').classList.add('hidden');
+                setupNavTabs();
+                showDashboard(currentRole, 'default');
+                showToast('Logged in successfully');
+            } catch (error) {
+                showToast('Error logging in: ' + error.message, 'error');
+            }
+        }
+
+        function logout() {
+            try {
+                if (currentUser) {
+                    currentUser.activity.push({ action: 'Logged out', timestamp: new Date().toISOString() });
+                    saveDB();
+                }
+                currentUser = null;
+                currentRole = '';
+                document.getElementById('dashboard').classList.add('hidden');
+                document.querySelector('.slider-container').classList.remove('hidden');
+                document.querySelector('nav').classList.remove('hidden');
+                showToast('Logged out successfully');
+            } catch (error) {
+                showToast('Error logging out: ' + error.message, 'error');
+            }
+        }
+
+        function register() {
+            try {
+                const data = {
+                    fullName: document.getElementById('regFullName').value.trim(),
+                    email: document.getElementById('regEmail').value.trim().toLowerCase(),
+                    id: document.getElementById('regMemberId').value.trim().toUpperCase(),
+                    location: document.getElementById('regLocation').value.trim(),
+                    occupation: document.getElementById('regOccupation').value.trim(),
+                    contact: document.getElementById('regContact').value.trim(),
+                    password: document.getElementById('regPassword').value
+                };
+                if (!data.id.match(/^BSS\d{3}$/)) {
+                    showToast('Member ID must be format BSS followed by 3 digits (e.g., BSS002)', 'error');
+                    return;
+                }
+                if (db.members.some(m => m.id.toLowerCase() === data.id.toLowerCase())) {
+                    showToast('Member ID already exists', 'error');
+                    return;
+                }
+                if (db.members.some(m => m.email.toLowerCase() === data.email)) {
+                    showToast('Email already exists', 'error');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
+                    showToast('Invalid email format', 'error');
+                    return;
+                }
+                if (!/^\+?\d{10,}$/.test(data.contact)) {
+                    showToast('Invalid contact format (e.g., +256700123456)', 'error');
+                    return;
+                }
+                const member = {
+                    id: data.id,
+                    fullName: data.fullName,
+                    email: data.email,
+                    location: data.location,
+                    occupation: data.occupation,
+                    contact: data.contact,
+                    savings: 0,
+                    loan: 0,
+                    portfolio: [],
+                    savingsHistory: [],
+                    activity: [{ action: 'Registered', timestamp: new Date().toISOString() }],
+                    password: data.password
+                };
+                db.members.push(member);
+                db.activityLog.push({ action: `Registered member ${data.id}`, by: 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `New member ${data.fullName} registered`, role: ['ceo', 'cashier'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                showToast('Registration successful. Please login.');
+            } catch (error) {
+                showToast('Error registering: ' + error.message, 'error');
+            }
+        }
+
+        function addMember() {
+            try {
+                const data = {
+                    fullName: document.getElementById('memberFullName').value.trim(),
+                    email: document.getElementById('memberEmail').value.trim().toLowerCase(),
+                    id: document.getElementById('memberId').value.trim().toUpperCase(),
+                    location: document.getElementById('memberLocation').value.trim(),
+                    occupation: document.getElementById('memberOccupation').value.trim(),
+                    contact: document.getElementById('memberContact').value.trim()
+                };
+                if (!data.id.match(/^BSS\d{3}$/)) {
+                    showToast('Member ID must be format BSS followed by 3 digits (e.g., BSS002)', 'error');
+                    return;
+                }
+                if (db.members.some(m => m.id.toLowerCase() === data.id.toLowerCase())) {
+                    showToast('Member ID already exists', 'error');
+                    return;
+                }
+                if (db.members.some(m => m.email.toLowerCase() === data.email)) {
+                    showToast('Email already exists', 'error');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
+                    showToast('Invalid email format', 'error');
+                    return;
+                }
+                if (!/^\+?\d{10,}$/.test(data.contact)) {
+                    showToast('Invalid contact format (e.g., +256700123456)', 'error');
+                    return;
+                }
+                const member = {
+                    id: data.id,
+                    fullName: data.fullName,
+                    email: data.email,
+                    location: data.location,
+                    occupation: data.occupation,
+                    contact: data.contact,
+                    savings: 0,
+                    loan: 0,
+                    portfolio: [],
+                    savingsHistory: [],
+                    activity: [{ action: 'Added by CEO', timestamp: new Date().toISOString() }],
+                    password: 'default123'
+                };
+                db.members.push(member);
+                db.activityLog.push({ action: `Added member ${data.id}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `New member ${data.fullName} added`, role: ['ceo', 'cashier', 'shareholder'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Member added successfully');
+            } catch (error) {
+                showToast('Error adding member: ' + error.message, 'error');
+            }
+        }
+
+        function editMember() {
+            try {
+                const memberId = document.getElementById('editMemberId').value;
+                const member = db.members.find(m => m.id === memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                const updatedData = {
+                    fullName: document.getElementById('editMemberFullName').value.trim(),
+                    email: document.getElementById('editMemberEmail').value.trim().toLowerCase(),
+                    location: document.getElementById('editMemberLocation').value.trim(),
+                    occupation: document.getElementById('editMemberOccupation').value.trim(),
+                    contact: document.getElementById('editMemberContact').value.trim()
+                };
+                if (db.members.some(m => m.id !== memberId && m.email.toLowerCase() === updatedData.email)) {
+                    showToast('Email already exists', 'error');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(updatedData.email)) {
+                    showToast('Invalid email format', 'error');
+                    return;
+                }
+                if (!/^\+?\d{10,}$/.test(updatedData.contact)) {
+                    showToast('Invalid contact format (e.g., +256700123456)', 'error');
+                    return;
+                }
+                Object.assign(member, updatedData);
+                member.activity.push({ action: 'Profile updated', timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Updated member ${memberId}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Member updated successfully');
+            } catch (error) {
+                showToast('Error updating member: ' + error.message, 'error');
+            }
+        }
+
+        function removeMember(memberId) {
+            try {
+                const member = db.members.find(m => m.id === memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                if (member.savings > 0 || member.loan > 0) {
+                    showToast('Cannot remove member with active savings or loans', 'error');
+                    return;
+                }
+                db.members = db.members.filter(m => m.id !== memberId);
+                db.activityLog.push({ action: `Removed member ${memberId}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `Member ${member.fullName} removed`, role: ['ceo', 'cashier'], timestamp: new Date().toISOString() });
+                saveDB();
+                debouncedUpdateDashboards();
+                showToast('Member removed successfully');
+            } catch (error) {
+                showToast('Error removing member: ' + error.message, 'error');
+            }
+        }
+
+        function updateProfile() {
+            try {
+                if (!currentUser) {
+                    showToast('No user logged in', 'error');
+                    return;
+                }
+                const updatedData = {
+                    fullName: document.getElementById('profileFullName').value.trim(),
+                    email: document.getElementById('profileEmail').value.trim().toLowerCase(),
+                    location: document.getElementById('profileLocation').value.trim(),
+                    occupation: document.getElementById('profileOccupation').value.trim(),
+                    contact: document.getElementById('profileContact').value.trim()
+                };
+                if (db.members.some(m => m.id !== currentUser.id && m.email.toLowerCase() === updatedData.email)) {
+                    showToast('Email already exists', 'error');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(updatedData.email)) {
+                    showToast('Invalid email format', 'error');
+                    return;
+                }
+                if (!/^\+?\d{10,}$/.test(updatedData.contact)) {
+                    showToast('Invalid contact format (e.g., +256700123456)', 'error');
+                    return;
+                }
+                Object.assign(currentUser, updatedData);
+                currentUser.activity.push({ action: 'Profile updated', timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Updated profile ${currentUser.id}`, by: currentUser.id, timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Profile updated successfully');
+            } catch (error) {
+                showToast('Error updating profile: ' + error.message, 'error');
+            }
+        }
+
+        function calculateLoanInterest(amount, months) {
+            const rate = 0.1;
+            return Math.round(amount * rate * (months / 12));
+        }
+
+        function calculateMonthlyPayment(amount, interest, months) {
+            return Math.round((amount + interest) / months);
+        }
+
+        function applyLoan() {
+            try {
+                const data = {
+                    id: `LOAN${Math.floor(100 + Math.random() * 900)}`,
+                    memberId: document.getElementById('loanMemberId').value.trim(),
+                    amount: parseInt(document.getElementById('loanAmount').value),
+                    purpose: document.getElementById('loanPurpose').value.trim(),
+                    repayment: parseInt(document.getElementById('loanRepayment').value),
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                };
+                const member = db.members.find(m => m.id === data.memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                if (data.amount <= 0) {
+                    showToast('Invalid loan amount', 'error');
+                    return;
+                }
+                if (member.loan > 0) {
+                    showToast('Member already has an active loan', 'error');
+                    return;
+                }
+                data.interest = calculateLoanInterest(data.amount, data.repayment);
+                data.monthlyPayment = calculateMonthlyPayment(data.amount, data.interest, data.repayment);
+                db.loans.push(data);
+                db.activityLog.push({ action: `Applied for loan ${data.id}`, by: data.memberId, timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `New loan application ${data.id} by ${member.fullName}`, role: ['cashier', 'ceo'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Loan application submitted');
+            } catch (error) {
+                showToast('Error applying for loan: ' + error.message, 'error');
+            }
+        }
+
+        function approveLoan(loanId) {
+            try {
+                const loan = db.loans.find(l => l.id === loanId);
+                if (!loan) {
+                    showToast('Loan not found', 'error');
+                    return;
+                }
+                const member = db.members.find(m => m.id === loan.memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                loan.status = 'approved';
+                member.loan += loan.amount;
+                member.activity.push({ action: `Loan ${loanId} approved`, timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Approved loan ${loanId}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `Loan ${loanId} approved for ${member.fullName}`, role: [currentRole, 'shareholder'], timestamp: new Date().toISOString() });
+                db.transactions.push({
+                    id: `TXN${Math.floor(100 + Math.random() * 900)}`,
+                    memberId: loan.memberId,
+                    amount: loan.amount,
+                    type: 'loanDisbursement',
+                    timestamp: new Date().toISOString()
+                });
+                saveDB();
+                debouncedUpdateDashboards();
+                showToast('Loan approved');
+            } catch (error) {
+                showToast('Error approving loan: ' + error.message, 'error');
+            }
+        }
+
+        function rejectLoan(loanId) {
+            try {
+                const loan = db.loans.find(l => l.id === loanId);
+                if (!loan) {
+                    showToast('Loan not found', 'error');
+                    return;
+                }
+                const member = db.members.find(m => m.id === loan.memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                loan.status = 'rejected';
+                member.activity.push({ action: `Loan ${loanId} rejected`, timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Rejected loan ${loanId}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `Loan ${loanId} rejected for ${member.fullName}`, role: [currentRole, 'shareholder'], timestamp: new Date().toISOString() });
+                saveDB();
+                debouncedUpdateDashboards();
+                showToast('Loan rejected');
+            } catch (error) {
+                showToast('Error rejecting loan: ' + error.message, 'error');
+            }
+        }
+
+        function recordTransaction() {
+            try {
+                const data = {
+                    id: `TXN${Math.floor(100 + Math.random() * 900)}`,
+                    memberId: document.getElementById('transMemberId').value.trim(),
+                    amount: parseInt(document.getElementById('transAmount').value),
+                    type: document.getElementById('transType').value,
+                    timestamp: new Date().toISOString()
+                };
+                const member = db.members.find(m => m.id === data.memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                if (data.amount <= 0) {
+                    showToast('Invalid amount', 'error');
+                    return;
+                }
+                if (data.type === 'deposit') {
+                    member.savings += data.amount;
+                    member.savingsHistory.push({ month: new Date().toLocaleString('default', { month: 'short' }), amount: member.savings });
+                } else if (data.type === 'withdrawal') {
+                    if (member.savings < data.amount) {
+                        showToast('Insufficient savings', 'error');
+                        return;
+                    }
+                    member.savings -= data.amount;
+                    member.savingsHistory.push({ month: new Date().toLocaleString('default', { month: 'short' }), amount: member.savings });
+                } else if (data.type === 'loanDisbursement') {
+                    const loan = db.loans.find(l => l.memberId === data.memberId && l.status === 'approved');
+                    if (!loan || loan.amount !== data.amount) {
+                        showToast('No matching approved loan found', 'error');
+                        return;
+                    }
+                }
+                db.transactions.push(data);
+                member.activity.push({ action: `Transaction ${data.type} of UGX ${data.amount}`, timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Recorded ${data.type} for ${data.memberId}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `${data.type} of UGX ${data.amount} for ${member.fullName}`, role: ['cashier', 'ceo'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Transaction recorded');
+            } catch (error) {
+                showToast('Error recording transaction: ' + error.message, 'error');
+            }
+        }
+
+        function createProject() {
+            try {
+                const data = {
+                    id: `PRJ${Math.floor(100 + Math.random() * 900)}`,
+                    name: document.getElementById('projectName').value.trim(),
+                    budget: parseInt(document.getElementById('projectBudget').value),
+                    timeline: document.getElementById('projectTimeline').value,
+                    description: document.getElementById('projectDescription').value.trim(),
+                    progress: 0,
+                    roi: 10,
+                    riskScore: 50
+                };
+                if (data.budget <= 0) {
+                    showToast('Invalid budget', 'error');
+                    return;
+                }
+                db.projects.push(data);
+                db.activityLog.push({ action: `Created project ${data.name}`, by: currentUser?.id || 'System', timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `New project ${data.name} created`, role: ['td', 'ceo'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Project created');
+            } catch (error) {
+                showToast('Error creating project: ' + error.message, 'error');
+            }
+        }
+
+        function contributeCondolence() {
+            try {
+                const data = {
+                    memberId: document.getElementById('condolenceMemberId').value.trim(),
+                    amount: parseInt(document.getElementById('condolenceAmount').value)
+                };
+                const member = db.members.find(m => m.id === data.memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                if (data.amount <= 0) {
+                    showToast('Invalid amount', 'error');
+                    return;
+                }
+                if (member.savings < data.amount) {
+                    showToast('Insufficient savings', 'error');
+                    return;
+                }
+                member.savings -= data.amount;
+                member.savingsHistory.push({ month: new Date().toLocaleString('default', { month: 'short' }), amount: member.savings });
+                db.condolenceFund += data.amount;
+                db.transactions.push({
+                    id: `TXN${Math.floor(100 + Math.random() * 900)}`,
+                    memberId: data.memberId,
+                    amount: data.amount,
+                    type: 'condolenceContribution',
+                    timestamp: new Date().toISOString()
+                });
+                member.activity.push({ action: `Contributed UGX ${data.amount} to condolence fund`, timestamp: new Date().toISOString() });
+                db.activityLog.push({ action: `Contributed UGX ${data.amount} to condolence fund`, by: data.memberId, timestamp: new Date().toISOString() });
+                db.notifications.push({ message: `${member.fullName} contributed UGX ${data.amount} to condolence fund`, role: ['ceo', 'cashier'], timestamp: new Date().toISOString() });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Contribution recorded');
+            } catch (error) {
+                showToast('Error contributing to condolence fund: ' + error.message, 'error');
+            }
+        }
+
+        function sendAnnouncement() {
+            try {
+                const message = document.getElementById('announcementMessage').value.trim();
+                if (!message) {
+                    showToast('Please enter a message', 'error');
+                    return;
+                }
+                db.announcements.push({
+                    message,
+                    by: currentUser?.id || 'System',
+                    timestamp: new Date().toISOString()
+                });
+                db.notifications.push({
+                    message: `Announcement: ${message}`,
+                    role: ['client', 'shareholder', 'cashier', 'td', 'ceo'],
+                    timestamp: new Date().toISOString()
+                });
+                db.activityLog.push({
+                    action: `Sent announcement`,
+                    by: currentUser?.id || 'System',
+                    timestamp: new Date().toISOString()
+                });
+                saveDB();
+                closeModal();
+                debouncedUpdateDashboards();
+                showToast('Announcement sent');
+            } catch (error) {
+                showToast('Error sending announcement: ' + error.message, 'error');
+            }
+        }
+
+        // Dashboard Updates
+        const debouncedUpdateDashboards = debounce(() => {
+            try {
+                // Client Dashboard
+                const clientTable = document.getElementById('clientTable');
+                clientTable.innerHTML = `
+                    <tr>
+                        <td class="p-3">${new Date().toLocaleDateString()}</td>
+                        <td class="p-3">${db.members.length}</td>
+                        <td class="p-3">John Doe</td>
+                        <td class="p-3">Jane Smith</td>
+                        <td class="p-3">Peter Okello</td>
+                        <td class="p-3">${db.loans.some(l => l.status === 'approved') ? 'Yes' : 'No'}</td>
+                    </tr>
+                `;
+
+                // Shareholder Dashboard
+                const shareholderTable = document.getElementById('shareholderTable');
+                shareholderTable.innerHTML = db.members.map((m, i) => `
+                    <tr>
+                        <td class="p-3">${i + 1}</td>
+                        <td class="p-3">${m.fullName}</td>
+                        <td class="p-3">${m.id}</td>
+                        <td class="p-3">UGX ${m.savings.toLocaleString()}</td>
+                        <td class="p-3">UGX ${m.loan.toLocaleString()}</td>
+                        <td class="p-3">${m.location}</td>
+                        <td class="p-3">${m.occupation}</td>
+                        <td class="p-3">${m.contact}</td>
+                    </tr>
+                `).join('');
+
+                const portfolio = document.getElementById('portfolio');
+                if (currentUser && currentUser.portfolio) {
+                    portfolio.innerHTML = currentUser.portfolio.map(p => `
+                        <p>${p.name}: UGX ${p.amount.toLocaleString()} (ROI: ${p.roi}%)</p>
+                    `).join('');
+                } else {
+                    portfolio.innerHTML = '<p>No portfolio data available</p>';
+                }
+
+                const repaymentTable = document.getElementById('repaymentTable');
+                repaymentTable.innerHTML = db.loans
+                    .filter(l => l.memberId === currentUser?.id && l.status === 'approved')
+                    .map(l => `
+                        <tr>
+                            <td class="p-3">UGX ${l.amount.toLocaleString()}</td>
+                            <td class="p-3">UGX ${l.interest.toLocaleString()}</td>
+                            <td class="p-3">${l.repayment} months</td>
+                            <td class="p-3">UGX ${l.monthlyPayment.toLocaleString()}</td>
+                        </tr>
+                    `).join('');
+
+                // Cashier Dashboard
+                const totalSavings = db.members.reduce((sum, m) => sum + m.savings, 0);
+                const totalLoans = db.members.reduce((sum, m) => sum + m.loan, 0);
+                document.getElementById('totalSavings').textContent = `UGX ${totalSavings.toLocaleString()}`;
+                document.getElementById('totalLoans').textContent = `UGX ${totalLoans.toLocaleString()}`;
+                document.getElementById('availableFunds').textContent = `UGX ${(totalSavings - totalLoans).toLocaleString()}`;
+
+                const loanTable = document.getElementById('loanTable');
+                loanTable.innerHTML = db.loans
+                    .filter(l => l.status === 'pending')
+                    .map(l => `
+                        <tr>
+                            <td class="p-3">${l.memberId}</td>
+                            <td class="p-3">UGX ${l.amount.toLocaleString()}</td>
+                            <td class="p-3">${l.purpose}</td>
+                            <td class="p-3">${l.repayment} months</td>
+                            <td class="p-3">
+                                <button onclick="approveLoan('${l.id}')" class="bg-green-600 text-white px-2 py-1 rounded-lg hover:bg-green-700 transition">Approve</button>
+                                <button onclick="rejectLoan('${l.id}')" class="bg-red-600 text-white px-2 py-1 rounded-lg hover:bg-red-700 transition">Reject</button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                if (financeChart) financeChart.destroy();
+                financeChart = new Chart(document.getElementById('financeChart'), {
+                    type: 'pie',
+                    data: {
+                        labels: ['Savings', 'Loans', 'Condolence Fund'],
+                        datasets: [{
+                            data: [totalSavings, totalLoans, db.condolenceFund],
+                            backgroundColor: ['#2563eb', '#dc2626', '#16a34a']
+                        }]
+                    }
+                });
+
+                // Technical Director Dashboard
+                const projectTable = document.getElementById('projectTable');
+                projectTable.innerHTML = db.projects.map(p => `
+                    <tr>
+                        <td class="p-3">${p.name}</td>
+                        <td class="p-3">UGX ${p.budget.toLocaleString()}</td>
+                        <td class="p-3">${p.timeline}</td>
+                        <td class="p-3">${p.progress}%</td>
+                        <td class="p-3">${p.roi}%</td>
+                        <td class="p-3">${p.riskScore}</td>
+                    </tr>
+                `).join('');
+
+                if (projectChart) projectChart.destroy();
+                projectChart = new Chart(document.getElementById('projectChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: db.projects.map(p => p.name),
+                        datasets: [{
+                            label: 'Progress (%)',
+                            data: db.projects.map(p => p.progress),
+                            backgroundColor: '#2563eb'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+
+                // CEO Dashboard
+                document.getElementById('totalMembers').textContent = db.members.length;
+                document.getElementById('activeInvestments').textContent = db.projects.length;
+                document.getElementById('condolenceFund').textContent = `UGX ${db.condolenceFund.toLocaleString()}`;
+
+                const ceoMemberTable = document.getElementById('ceoMemberTable');
+                ceoMemberTable.innerHTML = db.members.map((m, i) => `
+                    <tr>
+                        <td class="p-3">${i + 1}</td>
+                        <td class="p-3">${m.fullName}</td>
+                        <td class="p-3">${m.id}</td>
+                        <td class="p-3">UGX ${m.savings.toLocaleString()}</td>
+                        <td class="p-3">UGX ${m.loan.toLocaleString()}</td>
+                        <td class="p-3">${m.location}</td>
+                        <td class="p-3">${m.occupation}</td>
+                        <td class="p-3">${m.contact}</td>
+                        <td class="p-3">
+                            <button onclick="showEditMemberModal('${m.id}')" class="bg-yellow-600 text-white px-2 py-1 rounded-lg hover:bg-yellow-700 transition">Edit</button>
+                            <button onclick="removeMember('${m.id}')" class="bg-red-600 text-white px-2 py-1 rounded-lg hover:bg-red-700 transition">Remove</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                if (managementChart) managementChart.destroy();
+                managementChart = new Chart(document.getElementById('managementChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                        datasets: [
+                            {
+                                label: 'Total Savings',
+                                data: [1000000, 2000000, 3500000, 4000000, totalSavings],
+                                borderColor: '#2563eb',
+                                fill: false
+                            },
+                            {
+                                label: 'Total Loans',
+                                data: [500000, 1000000, 1500000, 2000000, totalLoans],
+                                borderColor: '#dc2626',
+                                fill: false
+                            }
+                        ]
+                    }
+                });
+
+                const activityLog = document.getElementById('activityLog');
+                activityLog.innerHTML = db.activityLog.map(log => `
+                    <li>${log.timestamp}: ${log.action} by ${log.by}</li>
+                `).join('');
+
+                // Notifications
+                const notificationsList = document.getElementById('notificationsList');
+                notificationsList.innerHTML = db.notifications
+                    .filter(n => n.role.includes(currentRole))
+                    .map(n => `<li>${n.timestamp}: ${n.message}</li>`)
+                    .join('');
+
+                // Search Functionality
+                const shareholderSearch = document.getElementById('shareholderSearch');
+                if (shareholderSearch) {
+                    shareholderSearch.addEventListener('input', () => {
+                        const query = shareholderSearch.value.toLowerCase();
+                        shareholderTable.innerHTML = db.members
+                            .filter(m => m.fullName.toLowerCase().includes(query) || m.id.toLowerCase().includes(query))
+                            .map((m, i) => `
+                                <tr>
+                                    <td class="p-3">${i + 1}</td>
+                                    <td class="p-3">${m.fullName}</td>
+                                    <td class="p-3">${m.id}</td>
+                                    <td class="p-3">UGX ${m.savings.toLocaleString()}</td>
+                                    <td class="p-3">UGX ${m.loan.toLocaleString()}</td>
+                                    <td class="p-3">${m.location}</td>
+                                    <td class="p-3">${m.occupation}</td>
+                                    <td class="p-3">${m.contact}</td>
+                                </tr>
+                            `).join('');
+                    });
+                }
+
+                const memberSearch = document.getElementById('memberSearch');
+                if (memberSearch) {
+                    memberSearch.addEventListener('input', () => {
+                        const query = memberSearch.value.toLowerCase();
+                        ceoMemberTable.innerHTML = db.members
+                            .filter(m => m.fullName.toLowerCase().includes(query) || m.id.toLowerCase().includes(query))
+                            .map((m, i) => `
+                                <tr>
+                                    <td class="p-3">${i + 1}</td>
+                                    <td class="p-3">${m.fullName}</td>
+                                    <td class="p-3">${m.id}</td>
+                                    <td class="p-3">UGX ${m.savings.toLocaleString()}</td>
+                                    <td class="p-3">UGX ${m.loan.toLocaleString()}</td>
+                                    <td class="p-3">${m.location}</td>
+                                    <td class="p-3">${m.occupation}</td>
+                                    <td class="p-3">${m.contact}</td>
+                                    <td class="p-3">
+                                        <button onclick="showEditMemberModal('${m.id}')" class="bg-yellow-600 text-white px-2 py-1 rounded-lg hover:bg-yellow-700 transition">Edit</button>
+                                        <button onclick="removeMember('${m.id}')" class="bg-red-600 text-white px-2 py-1 rounded-lg hover:bg-red-700 transition">Remove</button>
+                                    </td>
+                                </tr>
+                            `).join('');
+                    });
+                }
+            } catch (error) {
+                showToast('Error updating dashboards: ' + error.message, 'error');
+            }
+        }, 300);
+
+        function showSavingsTrend(memberId) {
+            try {
+                const member = db.members.find(m => m.id === memberId);
+                if (!member) {
+                    showToast('Member not found', 'error');
+                    return;
+                }
+                if (savingsChart) savingsChart.destroy();
+                savingsChart = new Chart(document.getElementById('savingsChart'), {
+                    type: 'line',
+                    data: {
+                        labels: member.savingsHistory.map(h => h.month),
+                        datasets: [{
+                            label: 'Savings (UGX)',
+                            data: member.savingsHistory.map(h => h.amount),
+                            borderColor: '#2563eb',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            } catch (error) {
+                showToast('Error showing savings trend: ' + error.message, 'error');
+            }
+        }
+
+        function sendMessage() {
+            try {
+                const message = document.getElementById('teamMessage').value.trim();
+                if (!message) {
+                    showToast('Please enter a message', 'error');
+                    return;
+                }
+                db.notifications.push({
+                    message: `Team message: ${message}`,
+                    role: ['td', 'ceo'],
+                    timestamp: new Date().toISOString()
+                });
+                db.activityLog.push({
+                    action: `Sent team message`,
+                    by: currentUser?.id || 'System',
+                    timestamp: new Date().toISOString()
+                });
+                saveDB();
+                document.getElementById('teamMessage').value = '';
+                debouncedUpdateDashboards();
+                showToast('Message sent');
+            } catch (error) {
+                showToast('Error sending message: ' + error.message, 'error');
+            }
+        }
+
+        // Navigation Tabs
+        function setupNavTabs() {
+            const tabs = {
+                client: ['Overview', 'Notifications'],
+                shareholder: ['Members', 'Savings Trend', 'Portfolio', 'Loan Repayments', 'Notifications'],
+                cashier: ['Financial Summary', 'Pending Loans', 'Financial Distribution', 'Notifications'],
+                td: ['Active Projects', 'Project Progress', 'Team Communication', 'Notifications'],
+                ceo: ['Summary', 'Members', 'Group Performance', 'Activity Log', 'Notifications']
+            };
+            const navTabs = document.getElementById('navTabs');
+            navTabs.innerHTML = tabs[currentRole].map(tab => `
+                <button class="nav-tab px-4 py-2 rounded-lg ${tab === 'Overview' ? 'active' : ''}" onclick="showDashboard('${currentRole}', '${tab.toLowerCase().replace(' ', '_')}')">${tab}</button>
+            `).join('');
+        }
+
+        // Show Dashboard
+        function showDashboard(role, section) {
+            try {
+                // Map section to valid values
+                const sectionMap = {
+                    client: { default: 'overview', overview: 'overview', notifications: 'notifications' },
+                    shareholder: { default: 'members', members: 'members', savings_trend: 'savings_trend', portfolio: 'portfolio', loan_repayments: 'loan_repayments', notifications: 'notifications' },
+                    cashier: { default: 'financial_summary', financial_summary: 'financial_summary', pending_loans: 'pending_loans', financial_distribution: 'financial_distribution', notifications: 'notifications' },
+                    td: { default: 'active_projects', active_projects: 'active_projects', project_progress: 'project_progress', team_communication: 'team_communication', notifications: 'notifications' },
+                    ceo: { default: 'summary', summary: 'summary', members: 'members', group_performance: 'group_performance', activity_log: 'activity_log', notifications: 'notifications' }
+                };
+                const validSection = sectionMap[role][section] || sectionMap[role].default;
+
+                // Set active tab
+                document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                const tabIndex = Object.keys(sectionMap[role]).indexOf(validSection) + 1;
+                const activeTab = document.querySelector(`.nav-tab:nth-child(${tabIndex})`);
+                if (activeTab) activeTab.classList.add('active');
+
+                // Show correct dashboard
+                document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+                const dashboardMap = {
+                    client: { overview: 'clientDashboard', notifications: 'notificationsDashboard' },
+                    shareholder: { members: 'shareholderDashboard', savings_trend: 'shareholderDashboard', portfolio: 'shareholderDashboard', loan_repayments: 'shareholderDashboard', notifications: 'notificationsDashboard' },
+                    cashier: { financial_summary: 'cashierDashboard', pending_loans: 'cashierDashboard', financial_distribution: 'cashierDashboard', notifications: 'notificationsDashboard' },
+                    td: { active_projects: 'tdDashboard', project_progress: 'tdDashboard', team_communication: 'tdDashboard', notifications: 'notificationsDashboard' },
+                    ceo: { summary: 'ceoDashboard', members: 'ceoDashboard', group_performance: 'ceoDashboard', activity_log: 'ceoDashboard', notifications: 'notificationsDashboard' }
+                };
+                document.getElementById(dashboardMap[role][validSection]).classList.remove('hidden');
+                document.querySelector('nav').classList.remove('hidden');
+                debouncedUpdateDashboards();
+            } catch (error) {
+                showToast('Error showing dashboard: ' + error.message, 'error');
+            }
+        }
+
+        // Slider
+        let slideIndex = 0;
+        function showSlides() {
+            try {
+                const slides = document.querySelector('.slides');
+                const totalSlides = document.querySelectorAll('.slides > *').length;
+                slideIndex = (slideIndex + 1) % totalSlides;
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+            } catch (error) {
+                showToast('Error in slider: ' + error.message, 'error');
+            }
+        }
+        setInterval(showSlides, 5000);
+
+        // Dark Mode
+        function toggleDarkMode() {
+            try {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                lastActivity = Date.now();
+            } catch (error) {
+                showToast('Error toggling dark mode: ' + error.message, 'error');
+            }
+        }
+
+        // Loan Interest Estimate
+        document.getElementById('loanAmount')?.addEventListener('input', () => {
+            try {
+                const amount = parseInt(document.getElementById('loanAmount').value) || 0;
+                const repayment = parseInt(document.getElementById('loanRepayment').value) || 6;
+                const interest = calculateLoanInterest(amount, repayment);
+                const monthly = calculateMonthlyPayment(amount, interest, repayment);
+                document.getElementById('loanEstimate').innerHTML = `
+                    Interest: UGX ${interest.toLocaleString()}<br>
+                    Monthly Payment: UGX ${monthly.toLocaleString()}
+                `;
+            } catch (error) {
+                showToast('Error calculating loan estimate: ' + error.message, 'error');
+            }
+        });
+
+        // Collapsible Sections
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                try {
+                    const content = header.nextElementSibling;
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                    lastActivity = Date.now();
+                } catch (error) {
+                    showToast('Error toggling collapsible section: ' + error.message, 'error');
+                }
+            });
+        });
+
+        // Inactivity Timeout
+        function checkInactivity() {
+            try {
+                if (Date.now() - lastActivity > 600000) { // 10 minutes
+                    currentUser = null;
+                    currentRole = '';
+                    document.getElementById('dashboard').classList.add('hidden');
+                    document.querySelector('.slider-container').classList.remove('hidden');
+                    document.querySelector('nav').classList.remove('hidden');
+                    showToast('Session timed out');
+                }
+            } catch (error) {
+                showToast('Error checking inactivity: ' + error.message, 'error');
+            }
+        }
+        setInterval(checkInactivity, 60000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                loadDB();
+                if (localStorage.getItem('darkMode') === 'true') {
+                    document.body.classList.add('dark-mode');
+                }
+                debouncedUpdateDashboards();
+                lastActivity = Date.now();
+            } catch (error) {
+                showToast('Error initializing: ' + error.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
